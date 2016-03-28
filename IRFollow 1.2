@@ -1,0 +1,79 @@
+/*
+
+Wink Robot
+IR following Sketch based on Wink
+Version 1.2 4/28/2016
+
+This sketch can be used by everyone who is able to reach the source
+This code was written by Ian
+This code is open Source and editable
+*/
+
+#include "WinkHardware.h"  // Enable Hardware from the file.
+
+int centerLightOff,centerLightOn,centerLightOnly; //Enable CenterIRSensor
+int leftLightOff,leftLightOn,leftLightOnly;       //Enable LeftIRSensor
+int rightLightOff,rightLightOn,rightLightOnly;    //Enable RightIRSensor
+
+
+void setup(){
+  hardwareBegin();                                //start hardware
+  playStartChirp();                               //play startup sound
+  waitForButton();                                //wait for button press
+  Serial.begin(9600);                             //set baud to 9600
+
+  delay(2000);                                       //wait 2000 ms
+  
+  digitalWrite(Headlight, HIGH);                     //turn on IR Headlight 
+  
+  delay(1);                                          //delay 1 ms
+  
+  centerLightOn = analogRead(AmbientSenseCenter);    //read sensor center
+  leftLightOn = analogRead(AmbientSenseLeft);        //read sensor left
+  rightLightOn = analogRead(AmbientSenseRight);      //read sensor right
+  rearLightOn = analogRead(AmbientSenseRight);       //read sensor rear
+}
+
+void loop(){                                         //start void loop
+
+ 
+ digitalWrite(Headlight, HIGH);                     //turn on IR Headlight
+ delay(1);                                          //delay 1 millisecond
+ centerLightOn = analogRead(AmbientSenseCenter);    //read sensor center
+  leftLightOn = analogRead(AmbientSenseLeft);       //read sensor left
+  rightLightOn = analogRead(AmbientSenseRight);     //read sensor right
+  rearLightOn = analogRead(AmbientSenseRight);      //read sensor rear
+ 
+ if (centerLightOn <= 300)                          //if center is smaller then 300
+ {
+    beStill();                                      //beStill
+ }
+  else
+  {
+    Serial.print(centerLightOn);                    //Show read before centerLightON
+    Serial.print("         "); 
+    Serial.print("centerLightON");
+    Serial.println();                               //Motors to 100
+    motors(100, 100); 
+    delay(50);                                      //delay 50 ms
+  }
+  if (leftLightOn >= centerLightOn + 30)            //if leftsensor has 30 more then center
+  {
+    Serial.print(leftLightOn);                      //Show read before leftLightON
+    Serial.print("         "); 
+    Serial.print("leftLightON");
+    Serial.println();
+    spinLeft(45);                                   //spin to the left with 45
+    delay(100);                                     //delay 100 ms
+  }
+  else if (rightLightOn >= centerLightOn + 30)      //else if rightsensor is 30 more then center
+  {
+   Serial.print(rightLightOn);                      //Show read before rightlightON
+   Serial.print("         "); 
+   Serial.print("rightLightON");
+   Serial.println();
+   spinRight(45);                                   //Spin to the right with 45
+   delay(100);                                      //delay 100 ms
+  }
+} //end of void loop()
+
